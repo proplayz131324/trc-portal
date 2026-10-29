@@ -258,7 +258,7 @@
             cursor: pointer;
         }
 
-        button {
+        button[type="submit"] {
             margin-top: 16px;
             background-color: var(--text-main);
             color: var(--bg-color);
@@ -272,7 +272,7 @@
             transition: opacity 0.2s ease;
         }
 
-        button:hover {
+        button[type="submit"]:hover {
             opacity: 0.9;
         }
 
@@ -299,7 +299,6 @@
     </div>
 
     <main>
-        
         <!-- 1. MAIN NAVIGATION MENU -->
         <section id="view-menu" class="view-section active">
             <h2 class="menu-title">Federal Administrative Gateway</h2>
@@ -336,44 +335,73 @@
             </div>
         </section>
 
-        <!-- 3. "APPLY FOR CITIZENSHIP TODAY" VIEW (FIXED ARCHITECTURE) -->
+        <!-- 3. "APPLY FOR CITIZENSHIP TODAY" VIEW -->
         <section id="view-citizenship" class="view-section">
             <a class="back-link" onclick="switchView('view-menu')">← Back to Gateway</a>
             <header>
-Application for E-Citizenship
-Federal Republic of Crete — Office of the President
-First Name
-Last Name
-Current Country of Residence
-Greece (Mainland)
-Cyprus
-United States
-United Kingdom
-Germany
-Other Sovereign State
+                <h1>Application for E-Citizenship</h1>
+                <p class="subtitle">Federal Republic of Crete — Office of the President</p>
+            </header>
+            <form onsubmit="event.preventDefault(); alert('Application submitted successfully!');">
+                <div class="form-group">
+                    <label for="first-name">First Name</label>
+                    <input type="text" id="first-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last-name">Last Name</label>
+                    <input type="text" id="last-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="country">Current Country of Residence</label>
+                    <select id="country" required>
+                        <option value="">Select Option</option>
+                        <option value="greece">Greece (Mainland)</option>
+                        <option value="cyprus">Cyprus</option>
+                        <option value="us">United States</option>
+                        <option value="uk">United Kingdom</option>
+                        <option value="germany">Germany</option>
+                        <option value="other">Other Sovereign State</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="intent">Statement of Intent</label>
+                    <textarea id="intent" placeholder="Describe your connection or passion for Crete..."></textarea>
+                </div>
+                <button type="submit">Submit to Federal Registry</button>
+            </form>
+        </section>
 
-Statement of Intent
-Submit to Federal Registry
+        <!-- 4. "CONTACT" VIEW -->
+        <section id="view-contact" class="view-section">
+            <a class="back-link" onclick="switchView('view-menu')">← Back to Gateway</a>
+            <header>
+                <h1>Federal Communications</h1>
+                <p class="subtitle">Reach the Office of the President</p>
+            </header>
+            <div class="info-card">
+                <p>For diplomatic inquiries, regional governor declarations, or artistic feedback, please contact the central core administration directly via our project parameters.</p>
+                <p><strong>Presidential Bureau Location:</strong><br>Digital Coordinates // Cloud Framework Server</p>
+            </div>
+        </section>
+    </main>
 
-← Back to Gateway
-Federal Communications
-Reach the Office of the President
+    <footer>
+        <p>© 2026 United States of Crete. Powered by Freedom of Artistic Expression.</p>
+    </footer>
 
-
-For diplomatic inquiries, regional governor declarations, or artistic feedback, please contact the central core administration directly via our project parameters.
-Presidential Bureau Location:
-Digital Coordinates // Cloud Framework Server
-
-© 2026 United States of Crete. Powered by Freedom of Artistic Expression.
-function switchView(viewId) {
-// Hide all views
-const views = document.querySelectorAll('.view-section');
-views.forEach(view => view.classList.remove('active'));
-// Show selected view
-const targetView = document.getElementById(viewId);
-if (targetView) {
-targetView.classList.add('active');
-window.scrollTo(0, 0);
-}
-}
-
+    <script>
+        function switchView(viewId) {
+            // Hide all views
+            const views = document.querySelectorAll('.view-section');
+            views.forEach(view => view.classList.remove('active'));
+            
+            // Show selected view
+            const targetView = document.getElementById(viewId);
+            if (targetView) {
+                targetView.classList.add('active');
+                window.scrollTo(0, 0);
+            }
+        }
+    </script>
+</body>
+</html>
