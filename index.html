@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federal Republic of Crete — Portal</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #111111;
+            --text-muted: #777777;
+            --border-color: #e0e0e0;
+            --accent-green: #3a5f43; /* Olive green theme */
+            --greek-blue: #005bae; /* Classic Greek blue */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Big Blue Horizontal Header Bar */
+        .blue-header-bar {
+            background-color: var(--greek-blue);
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 4px solid var(--accent-green);
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* Disclaimer Banner */
+        .disclaimer-banner {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto 10px auto;
+            background-color: #fff9f9;
+            border: 1px solid #ffebeb;
+            padding: 12px 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .disclaimer-banner p {
+            font-size: 0.75rem;
+            color: #cc0000;
+            letter-spacing: 0.03em;
+            line-height: 1.4;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* View Switching Logic */
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        /* Menu View Styling */
+        .menu-title {
+            font-size: 1.6rem;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--text-main);
+        }
+
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            list-style: none;
+        }
+
+        .menu-btn {
+            width: 100%;
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 18px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-btn:hover {
+            border-color: var(--text-main);
+            background-color: #f9f9f9;
+            padding-left: 30px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            color: var(--text-main);
+        }
+
+        /* Information & Contact Views Content Styling */
+        header {
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        /* Presidential Flag Canton Visual Anchor */
+        .flag-emblem {
+            width: 64px;
+            height: 40px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            position: relative;
+            background: repeating-linear-gradient(
+                #005bae,
+                #005bae 4.4px,
+                #ffffff 4.4px,
+                #ffffff 8.8px
+            );
+        }
+
+        .flag-emblem::before {
+            content: "•";
+            color: var(--accent-green);
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 28px;
+            height: 20px;
+            background-color: var(--bg-color);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            letter-spacing: 0.01em;
+            margin-bottom: 20px;
+        }
+
+        .info-card {
+            border-left: 2px solid var(--text-main);
+            padding-left: 20px;
+            margin-bottom: 24px;
+        }
+
+        .info-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-main);
+            margin-bottom: 12px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-main);
+        }
+
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 0;
+            font-size: 1rem;
+            color: var(--text-main);
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 0;
+            transition: border-color 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-bottom-color: var(--text-main);
+        }
+
+        textarea {
+            resize: none;
+            height: 100px;
+            line-height: 1.5;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        button {
+            margin-top: 16px;
+            background-color: var(--text-main);
+            color: var(--bg-color);
+            border: none;
+            padding: 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        footer {
+            margin-top: 60px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+            padding-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Big Blue Horizontal Header Bar with Logo -->
+    <div class="blue-header-bar">
+        <div class="logo-text">The Republic of Crete (TRC)</div>
+    </div>
+
+    <!-- Safety Verification Banner -->
+    <div class="disclaimer-banner">
+        <p>Virtual Simulation Portal // Καλλιτεχνική Παρωδία // Not a real government agency</p>
+    </div>
+
+    <main>
+        
+        <!-- 1. MAIN NAVIGATION MENU -->
+        <section id="view-menu" class="view-section active">
+            <h2 class="menu-title">Federal Administrative Gateway</h2>
+            <ul class="menu-list">
+                <li>
+                    <button class="menu-btn" onclick="switchView('view-about')">
+                        What is the Republic of Crete? <span>→</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="menu-btn" onclick="switchView('view-citizenship')">
+                        Apply for citizenship today <span>→</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="menu-btn" onclick="switchView('view-contact')">
+                        Contact <span>→</span>
+                    </button>
+                </li>
+            </ul>
+        </section>
+
+        <!-- 2. "WHAT IS THE REPUBLIC OF CRETE?" VIEW -->
+        <section id="view-about" class="view-section">
+            <a class="back-link" onclick="switchView('view-menu')">← Back to Gateway</a>
+            <header>
+                <div class="flag-emblem" aria-hidden="true"></div>
+                <h1>National Declaration</h1>
+                <p class="subtitle">A Brotherly Model of Regional Sovereignty</p>
+            </header>
+            <div class="info-card">
+                <p>The Republic of Crete (TRC) is a symbolic, devolved model federation celebrating the deep heritage, wild independence, and agricultural pride of Greece's largest island.</p>
+                <p>Built as an artistic parallel simulation, the TRC honors the eternal bonds with mainland Greece while mapping out an imaginary, high-tech autonomous framework across our four historic federal states: Chania, Rethymno, Heraklion, and Lasithi.</p>
+            </div>
+        </section>
+
+        <!-- 3. "APPLY FOR CITIZENSHIP TODAY" VIEW (YOUR CORRESPONDING CODE) -->
+        <section id="view-citizenship" class="view-section">
+            <a class="back-link" onclick="switchView('view-menu')">← Back to Gateway</a>
+            <header>
+Application for E-Citizenship
+Federal Republic of Crete — Office of the President
+First Name
+Last Name
+Current Country of Residence
+Greece (Mainland)
+Cyprus
+United States
+United Kingdom
+Germany
+Other Sovereign State
+
+Statement of Intent
+Submit to Federal Registry
+
+← Back to Gateway
+Federal Communications
+Reach the Office of the President
+
+
+For diplomatic inquiries, regional governor declarations, or artistic feedback, please contact the central core administration directly via our project parameters.
+Presidential Bureau Location:
+Digital Coordinates // Cloud Framework Server
+
+© 2026 United States of Crete. Powered by Freedom of Artistic Expression.
+function switchView(viewId) {
+// Hide all views
+const views = document.querySelectorAll('.view-section');
+views.forEach(view => view.classList.remove('active'));
+// Show selected view
+const targetView = document.getElementById(viewId);
+if (targetView) {
+targetView.classList.add('active');
+window.scrollTo(0, 0); // Scroll to top smoothly on switch
+}
+}
