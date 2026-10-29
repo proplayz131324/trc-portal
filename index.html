@@ -15,6 +15,9 @@
             --gov-green: #155724;
             --gov-green-bg: #d4edda;
             --gov-green-border: #c3e6cb;
+            --gov-yellow: #856404;
+            --gov-yellow-bg: #fff3cd;
+            --gov-yellow-border: #ffeeba;
         }
 
         * {
@@ -273,7 +276,7 @@
             left: -9999px !important;
         }
 
-        button[type="submit"] {
+        button[type="submit"], .action-btn {
             margin-top: 16px;
             background-color: var(--text-main);
             color: var(--bg-color);
@@ -285,9 +288,10 @@
             text-transform: uppercase;
             cursor: pointer;
             transition: opacity 0.2s ease;
+            width: 100%;
         }
 
-        button[type="submit"]:hover {
+        button[type="submit"]:hover, .action-btn:hover {
             opacity: 0.9;
         }
 
@@ -339,6 +343,77 @@
             font-weight: bold;
         }
 
+        /* E-Citizen Digital Pass Card Styling */
+        .citizen-card {
+            background-color: #fcfcfc;
+            border: 2px solid var(--greek-blue);
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 91, 174, 0.08);
+        }
+
+        .citizen-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .citizen-card-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--greek-blue);
+        }
+
+        .status-badge-pending {
+            background-color: var(--gov-yellow-bg);
+            color: var(--gov-yellow);
+            border: 1px solid var(--gov-yellow-border);
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .status-badge-approved {
+            background-color: var(--gov-green-bg);
+            color: var(--gov-green);
+            border: 1px solid var(--gov-green-border);
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .card-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .card-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
         footer {
             margin-top: 60px;
             text-align: center;
@@ -354,7 +429,7 @@
     <!-- Official Toast Notification Box -->
     <div id="toast" class="toast-notification" role="alert">
         <div class="toast-icon">✓</div>
-        <span>Form submitted successfully</span>
+        <span>Application filed with Federal Registry</span>
     </div>
 
     <!-- Big Blue Horizontal Header Bar with Logo -->
@@ -380,6 +455,11 @@
                 <li>
                     <button class="menu-btn" onclick="switchView('view-citizenship')">
                         Apply for citizenship today <span>→</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="menu-btn" onclick="switchView('view-status')">
+                        Check application status <span>→</span>
                     </button>
                 </li>
                 <li>
@@ -435,12 +515,12 @@
                     <label for="country">Current Country of Residence</label>
                     <select id="country" name="country" required>
                         <option value="">Select Option</option>
-                        <option value="greece">Greece (Mainland)</option>
-                        <option value="cyprus">Cyprus</option>
-                        <option value="us">United States</option>
-                        <option value="uk">United Kingdom</option>
-                        <option value="germany">Germany</option>
-                        <option value="other">Other Sovereign State</option>
+                        <option value="Greece (Mainland)">Greece (Mainland)</option>
+                        <option value="Cyprus">Cyprus</option>
+                        <option value="United States">United States</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Germany">Germany</option>
+                        <option value="Other Sovereign State">Other Sovereign State</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -452,7 +532,25 @@
             </form>
         </section>
 
-        <!-- 4. "CONTACT" VIEW -->
+        <!-- 4. "CHECK APPLICATION STATUS" VIEW -->
+        <section id="view-status" class="view-section">
+            <a class="back-link" onclick="switchView('view-menu')">← Back to Gateway</a>
+            <header>
+                <h1>Federal Registry Lookup</h1>
+                <p class="subtitle">Search Administrative Status</p>
+            </header>
+            
+            <div class="form-group">
+                <label for="lookup-email">Registered Email Address</label>
+                <input type="email" id="lookup-email" placeholder="Enter applicant email address...">
+            </div>
+            <button class="action-btn" onclick="checkStatus()">Search Federal Registry</button>
+
+            <!-- Results Display Box -->
+            <div id="status-result" style="margin-top: 20px;"></div>
+        </section>
+
+        <!-- 5. "CONTACT" VIEW -->
         <section id="view-contact" class="view-section">
             <a class="back-link" onclick="switchView('view-menu')">← Back to Gateway</a>
             <header>
@@ -473,6 +571,12 @@
     <script>
         // Cooldown duration in milliseconds (10 Minutes)
         const COOLDOWN_MS = 10 * 60 * 1000;
+
+        // Pre-approved list of email addresses (Add emails here to auto-approve them)
+        const PRE_APPROVED_EMAILS = [
+            "president@republicofcrete.org",
+            "admin@republicofcrete.org"
+        ];
 
         function switchView(viewId) {
             // Hide all views
@@ -520,13 +624,33 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    // Record submission timestamp to prevent rapid resubmissions
+                    // Record submission timestamp
                     localStorage.setItem('trc_last_submit_time', Date.now());
+
+                    // Generate local pending application record
+                    const firstName = document.getElementById('first-name').value;
+                    const lastName = document.getElementById('last-name').value;
+                    const email = document.getElementById('email').value.toLowerCase().trim();
+                    const country = document.getElementById('country').value;
+                    const trackingId = 'TRC-REQ-' + Math.floor(100000 + Math.random() * 900000);
+                    const dateSubmitted = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                    const record = {
+                        name: `${firstName} ${lastName}`,
+                        email: email,
+                        country: country,
+                        trackingId: trackingId,
+                        date: dateSubmitted,
+                        status: 'PENDING' // Defaults to Pending Review
+                    };
+
+                    // Save record to browser's LocalStorage
+                    localStorage.setItem('trc_citizen_' + email, JSON.stringify(record));
 
                     // Reset form inputs
                     form.reset();
 
-                    // Switch back to the main portal menu
+                    // Switch back to main portal menu
                     switchView('view-menu');
 
                     // Show government toast notification
@@ -539,6 +663,67 @@
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerText = originalBtnText;
+            }
+        }
+
+        function checkStatus() {
+            const emailInput = document.getElementById('lookup-email').value.toLowerCase().trim();
+            const resultDiv = document.getElementById('status-result');
+
+            if (!emailInput) {
+                resultDiv.innerHTML = '<p style="color: red; font-size: 0.85rem;">Please enter an applicant email address.</p>';
+                return;
+            }
+
+            // Fetch record from local device storage
+            const recordData = localStorage.getItem('trc_citizen_' + emailInput);
+
+            if (recordData) {
+                const citizen = JSON.parse(recordData);
+                
+                // Check if email is in pre-approved array
+                const isApproved = citizen.status === 'APPROVED' || PRE_APPROVED_EMAILS.includes(emailInput);
+                
+                const badgeClass = isApproved ? 'status-badge-approved' : 'status-badge-pending';
+                const statusText = isApproved ? 'APPROVED // E-CITIZEN' : 'PENDING ADMINISTRATIVE REVIEW';
+                const noteText = isApproved 
+                    ? 'Official E-Citizenship credentials granted by the Presidential Office.'
+                    : 'Application logged. Pending formal review by the Federal Registry Office.';
+
+                resultDiv.innerHTML = `
+                    <div class="citizen-card">
+                        <div class="citizen-card-header">
+                            <span class="citizen-card-title">Republic of Crete — Registry</span>
+                            <span class="${badgeClass}">${statusText}</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">Applicant Name</span>
+                            <span class="card-value">${citizen.name}</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">Tracking Ref</span>
+                            <span class="card-value">${citizen.trackingId}</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">Jurisdiction</span>
+                            <span class="card-value">${citizen.country}</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">Filing Date</span>
+                            <span class="card-value">${citizen.date}</span>
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 8px;">
+                            ${noteText}
+                        </p>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="info-card" style="border-left-color: #cc0000; margin-top: 10px;">
+                        <p style="font-size: 0.9rem;"><strong>No Filing Record Found</strong></p>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">No application was found matching this email on this device. Please submit an official application via the Gateway.</p>
+                    </div>
+                `;
             }
         }
 
