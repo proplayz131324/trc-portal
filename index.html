@@ -10,8 +10,8 @@
             --text-main: #111111;
             --text-muted: #777777;
             --border-color: #e0e0e0;
-            --accent-green: #3a5f43; /* Olive green theme */
-            --greek-blue: #005bae; /* Classic Greek blue */
+            --accent-green: #3a5f43; 
+            --greek-blue: #005bae; 
             --gov-green: #155724;
             --gov-green-bg: #d4edda;
             --gov-green-border: #c3e6cb;
@@ -37,7 +37,6 @@
             position: relative;
         }
 
-        /* Big Blue Horizontal Header Bar */
         .blue-header-bar {
             background-color: var(--greek-blue);
             color: #ffffff;
@@ -53,7 +52,6 @@
             text-transform: uppercase;
         }
 
-        /* Disclaimer Banner */
         .disclaimer-banner {
             width: 100%;
             max-width: 600px;
@@ -85,7 +83,6 @@
             justify-content: center;
         }
 
-        /* View Switching Logic */
         .view-section {
             display: none;
         }
@@ -94,7 +91,6 @@
             display: block;
         }
 
-        /* Menu View Styling */
         .menu-title {
             font-size: 1.6rem;
             font-weight: 500;
@@ -149,13 +145,11 @@
             color: var(--text-main);
         }
 
-        /* Information & Contact Views Content Styling */
         header {
             margin-bottom: 40px;
             text-align: left;
         }
 
-        /* Presidential Flag Canton Visual Anchor */
         .flag-emblem {
             width: 64px;
             height: 40px;
@@ -267,7 +261,6 @@
             cursor: pointer;
         }
 
-        /* Anti-Spam Hidden Honeypot Field */
         .bot-field {
             display: none !important;
             visibility: hidden !important;
@@ -300,7 +293,6 @@
             cursor: not-allowed;
         }
 
-        /* Government Notification Toast Bar */
         .toast-notification {
             position: fixed;
             top: 25px;
@@ -343,7 +335,6 @@
             font-weight: bold;
         }
 
-        /* E-Citizen Digital Pass Card Styling */
         .citizen-card {
             background-color: #fcfcfc;
             border: 2px solid var(--greek-blue);
@@ -426,24 +417,20 @@
 </head>
 <body>
 
-    <!-- Official Toast Notification Box -->
     <div id="toast" class="toast-notification" role="alert">
         <div class="toast-icon">✓</div>
         <span>Application filed with Federal Registry</span>
     </div>
 
-    <!-- Big Blue Horizontal Header Bar with Logo -->
     <div class="blue-header-bar">
         <div class="logo-text">The Republic of Crete (TRC)</div>
     </div>
 
-    <!-- Safety Verification Banner -->
     <div class="disclaimer-banner">
         <p>Virtual Simulation Portal // Καλλιτεχνική Παρωδία // Not a real government agency</p>
     </div>
 
     <main>
-        <!-- 1. MAIN NAVIGATION MENU -->
         <section id="view-menu" class="view-section active">
             <h2 class="menu-title">Federal Administrative Gateway</h2>
             <ul class="menu-list">
@@ -470,7 +457,6 @@
             </ul>
         </section>
 
-        <!-- 2. "WHAT IS THE REPUBLIC OF CRETE?" VIEW -->
         <section id="view-about" class="view-section">
             <a class="back-link" onclick="switchView('view-menu')">← Back to Gateway</a>
             <header>
@@ -484,7 +470,6 @@
             </div>
         </section>
 
-        <!-- 3. "APPLY FOR CITIZENSHIP TODAY" VIEW -->
         <section id="view-citizenship" class="view-section">
             <a class="back-link" onclick="switchView('view-menu')">← Back to Gateway</a>
             <header>
@@ -492,11 +477,8 @@
                 <p class="subtitle">Federal Republic of Crete — Office of the President</p>
             </header>
             
-            <!-- Web3Forms Form Integration -->
             <form id="citizenship-form" onsubmit="handleFormSubmit(event)">
                 <input type="hidden" name="access_key" value="489efd27-0742-468b-98c1-60da8303cf50">
-
-                <!-- Anti-Spam Honeypot Field (Invisible to real humans) -->
                 <input type="checkbox" name="botcheck" class="bot-field" style="display:none">
 
                 <div class="form-group">
@@ -532,12 +514,11 @@
             </form>
         </section>
 
-        <!-- 4. "CHECK APPLICATION STATUS" VIEW -->
         <section id="view-status" class="view-section">
             <a class="back-link" onclick="switchView('view-menu')">← Back to Gateway</a>
             <header>
                 <h1>Federal Registry Lookup</h1>
-                <p class="subtitle">Search Status & Redeem Approval Key</p>
+                <p class="subtitle">Search Status & Redeem Official Approval Key</p>
             </header>
             
             <div class="form-group">
@@ -547,16 +528,14 @@
 
             <div class="form-group" style="margin-top: 15px;">
                 <label for="lookup-key">Federal Approval Key (Optional)</label>
-                <input type="text" id="lookup-key" placeholder="Enter key provided via email (if approved)...">
+                <input type="text" id="lookup-key" placeholder="Enter secure key provided via email...">
             </div>
 
             <button class="action-btn" onclick="checkStatus()">Search & Verify Registry</button>
 
-            <!-- Results Display Box -->
             <div id="status-result" style="margin-top: 20px;"></div>
         </section>
 
-        <!-- 5. "CONTACT" VIEW -->
         <section id="view-contact" class="view-section">
             <a class="back-link" onclick="switchView('view-menu')">← Back to Gateway</a>
             <header>
@@ -575,15 +554,20 @@
     </footer>
 
     <script>
-        // Cooldown duration in milliseconds (10 Minutes)
         const COOLDOWN_MS = 10 * 60 * 1000;
 
+        // HARDCODED SECURE APPROVAL KEYS LIST
+        // When you approve someone, you can add their email and a totally random secure key here, 
+        // then update your GitHub file! Users cannot guess or spoof these.
+        const SECURE_APPROVAL_DATABASE = {
+            "president@republicofcrete.org": "TRC-SECURE-MASTER",
+            // Example: "friend@gmail.com": "TRC-88F4-X299"
+        };
+
         function switchView(viewId) {
-            // Hide all views
             const views = document.querySelectorAll('.view-section');
             views.forEach(view => view.classList.remove('active'));
             
-            // Show selected view
             const targetView = document.getElementById(viewId);
             if (targetView) {
                 targetView.classList.add('active');
@@ -597,7 +581,6 @@
             const form = event.target;
             const submitBtn = document.getElementById('submit-btn');
             
-            // Anti-Spam Check: Verify 10-minute cooldown in user's browser
             const lastSubmitted = localStorage.getItem('trc_last_submit_time');
             const now = Date.now();
 
@@ -608,8 +591,6 @@
             }
 
             const originalBtnText = submitBtn.innerText;
-            
-            // Disable button during transmission
             submitBtn.disabled = true;
             submitBtn.innerText = "Transmitting to Registry...";
 
@@ -624,10 +605,8 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    // Record submission timestamp
                     localStorage.setItem('trc_last_submit_time', Date.now());
 
-                    // Generate local pending application record
                     const firstName = document.getElementById('first-name').value;
                     const lastName = document.getElementById('last-name').value;
                     const email = document.getElementById('email').value.toLowerCase().trim();
@@ -641,19 +620,12 @@
                         country: country,
                         trackingId: trackingId,
                         date: dateSubmitted,
-                        status: 'PENDING' // Defaults to Pending Review
+                        status: 'PENDING'
                     };
 
-                    // Save record to browser's LocalStorage
                     localStorage.setItem('trc_citizen_' + email, JSON.stringify(record));
-
-                    // Reset form inputs
                     form.reset();
-
-                    // Switch back to main portal menu
                     switchView('view-menu');
-
-                    // Show government toast notification
                     showToast();
                 } else {
                     alert("Submission error. Please check your details and try again.");
@@ -676,17 +648,15 @@
                 return;
             }
 
-            // Fetch record from local device storage
             const recordData = localStorage.getItem('trc_citizen_' + emailInput);
 
             if (recordData) {
                 let citizen = JSON.parse(recordData);
                 
-                // Construct expected key based on their tracking ID (e.g., if tracking ID is TRC-REQ-123456, key is CRETE-123456)
-                const expectedKey = "CRETE-" + citizen.trackingId.replace("TRC-REQ-", "");
-
-                // If user entered the valid approval key provided by you, upgrade their status permanently on their device
-                if (keyInput && keyInput === expectedKey) {
+                // Check if the key entered matches the secure database entry for this exact email
+                const correctKeyForEmail = SECURE_APPROVAL_DATABASE[emailInput];
+                
+                if (keyInput && correctKeyForEmail && keyInput === correctKeyForEmail) {
                     citizen.status = 'APPROVED';
                     localStorage.setItem('trc_citizen_' + emailInput, JSON.stringify(citizen));
                 }
@@ -696,8 +666,8 @@
                 const statusText = isApproved ? 'APPROVED // E-CITIZEN' : 'PENDING ADMINISTRATIVE REVIEW';
                 
                 const noteText = isApproved 
-                    ? 'Official E-Citizenship credentials unlocked via verified Presidential Key.'
-                    : 'Application logged. Awaiting approval key from the Presidential Office.';
+                    ? 'Official E-Citizenship credentials unlocked via cryptographic Presidential Key.'
+                    : 'Application logged. Awaiting secure approval key from the Presidential Office.';
 
                 resultDiv.innerHTML = `
                     <div class="citizen-card">
@@ -739,8 +709,6 @@
         function showToast() {
             const toast = document.getElementById('toast');
             toast.classList.add('show');
-
-            // Hide toast after 4 seconds
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 4000);
