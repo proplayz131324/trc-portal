@@ -226,6 +226,7 @@
         }
 
         input[type="text"],
+        input[type="email"],
         select,
         textarea {
             width: 100%;
@@ -240,6 +241,7 @@
         }
 
         input[type="text"]:focus,
+        input[type="email"]:focus,
         select:focus,
         textarea:focus {
             outline: none;
@@ -342,18 +344,27 @@
                 <h1>Application for E-Citizenship</h1>
                 <p class="subtitle">Federal Republic of Crete — Office of the President</p>
             </header>
-            <form onsubmit="event.preventDefault(); alert('Application submitted successfully!');">
+            
+            <!-- Web3Forms Form Integration -->
+            <form action="https://api.web3forms.com/submit" method="POST">
+                <!-- Your Web3Forms Access Key -->
+                <input type="hidden" name="access_key" value="489efd27-0742-468b-98c1-60da8303cf50">
+
                 <div class="form-group">
                     <label for="first-name">First Name</label>
-                    <input type="text" id="first-name" required>
+                    <input type="text" id="first-name" name="first_name" required>
                 </div>
                 <div class="form-group">
                     <label for="last-name">Last Name</label>
-                    <input type="text" id="last-name" required>
+                    <input type="text" id="last-name" name="last_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address (for response)</label>
+                    <input type="email" id="email" name="email" required>
                 </div>
                 <div class="form-group">
                     <label for="country">Current Country of Residence</label>
-                    <select id="country" required>
+                    <select id="country" name="country" required>
                         <option value="">Select Option</option>
                         <option value="greece">Greece (Mainland)</option>
                         <option value="cyprus">Cyprus</option>
@@ -365,8 +376,12 @@
                 </div>
                 <div class="form-group">
                     <label for="intent">Statement of Intent</label>
-                    <textarea id="intent" placeholder="Describe your connection or passion for Crete..."></textarea>
+                    <textarea id="intent" name="intent" placeholder="Describe your connection or passion for Crete..."></textarea>
                 </div>
+
+                <!-- Optional: Redirect back to your site after successful submit -->
+                <input type="hidden" name="redirect" value="https://proplayz131324.github.io/trc-portal/">
+
                 <button type="submit">Submit to Federal Registry</button>
             </form>
         </section>
