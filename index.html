@@ -264,6 +264,15 @@
             cursor: pointer;
         }
 
+        /* Anti-Spam Hidden Honeypot Field */
+        .bot-field {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            position: absolute !important;
+            left: -9999px !important;
+        }
+
         button[type="submit"] {
             margin-top: 16px;
             background-color: var(--text-main);
@@ -407,6 +416,9 @@
             <form id="citizenship-form" onsubmit="handleFormSubmit(event)">
                 <input type="hidden" name="access_key" value="489efd27-0742-468b-98c1-60da8303cf50">
 
+                <!-- Anti-Spam Honeypot Field (Invisible to real humans) -->
+                <input type="checkbox" name="botcheck" class="bot-field" style="display:none">
+
                 <div class="form-group">
                     <label for="first-name">First Name</label>
                     <input type="text" id="first-name" name="first_name" required>
@@ -459,6 +471,9 @@
     </footer>
 
     <script>
+        // Cooldown duration in milliseconds (10 Minutes)
+        const COOLDOWN_MS = 10 * 60 * 1000;
+
         function switchView(viewId) {
             // Hide all views
             const views = document.querySelectorAll('.view-section');
@@ -477,9 +492,20 @@
             
             const form = event.target;
             const submitBtn = document.getElementById('submit-btn');
+            
+            // Anti-Spam Check: Verify 10-minute cooldown in user's browser
+            const lastSubmitted = localStorage.getItem('trc_last_submit_time');
+            const now = Date.now();
+
+            if (lastSubmitted && (now - lastSubmitted < COOLDOWN_MS)) {
+                const remainingMinutes = Math.ceil((COOLDOWN_MS - (now - lastSubmitted)) / 60000);
+                alert(`Security Protocol: An application from this device was recently received. Please wait ${remainingMinutes} minute(s) before submitting another request.`);
+                return;
+            }
+
             const originalBtnText = submitBtn.innerText;
             
-            // Show processing status on button
+            // Disable button during transmission
             submitBtn.disabled = true;
             submitBtn.innerText = "Transmitting to Registry...";
 
@@ -494,6 +520,9 @@
                 const result = await response.json();
 
                 if (result.success) {
+                    // Record submission timestamp to prevent rapid resubmissions
+                    localStorage.setItem('trc_last_submit_time', Date.now());
+
                     // Reset form inputs
                     form.reset();
 
