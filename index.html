@@ -537,14 +537,20 @@
             <a class="back-link" onclick="switchView('view-menu')">← Back to Gateway</a>
             <header>
                 <h1>Federal Registry Lookup</h1>
-                <p class="subtitle">Search Administrative Status</p>
+                <p class="subtitle">Search Status & Redeem Approval Key</p>
             </header>
             
             <div class="form-group">
                 <label for="lookup-email">Registered Email Address</label>
                 <input type="email" id="lookup-email" placeholder="Enter applicant email address...">
             </div>
-            <button class="action-btn" onclick="checkStatus()">Search Federal Registry</button>
+
+            <div class="form-group" style="margin-top: 15px;">
+                <label for="lookup-key">Federal Approval Key (Optional)</label>
+                <input type="text" id="lookup-key" placeholder="Enter key provided via email (if approved)...">
+            </div>
+
+            <button class="action-btn" onclick="checkStatus()">Search & Verify Registry</button>
 
             <!-- Results Display Box -->
             <div id="status-result" style="margin-top: 20px;"></div>
@@ -571,12 +577,6 @@
     <script>
         // Cooldown duration in milliseconds (10 Minutes)
         const COOLDOWN_MS = 10 * 60 * 1000;
-
-        // Pre-approved list of email addresses (Add emails here to auto-approve them)
-        const PRE_APPROVED_EMAILS = [
-            "president@republicofcrete.org",
-            "admin@republicofcrete.org"
-        ];
 
         function switchView(viewId) {
             // Hide all views
@@ -668,6 +668,7 @@
 
         function checkStatus() {
             const emailInput = document.getElementById('lookup-email').value.toLowerCase().trim();
+            const keyInput = document.getElementById('lookup-key').value.trim();
             const resultDiv = document.getElementById('status-result');
 
             if (!emailInput) {
@@ -679,16 +680,24 @@
             const recordData = localStorage.getItem('trc_citizen_' + emailInput);
 
             if (recordData) {
-                const citizen = JSON.parse(recordData);
+                let citizen = JSON.parse(recordData);
                 
-                // Check if email is in pre-approved array
-                const isApproved = citizen.status === 'APPROVED' || PRE_APPROVED_EMAILS.includes(emailInput);
-                
+                // Construct expected key based on their tracking ID (e.g., if tracking ID is TRC-REQ-123456, key is CRETE-123456)
+                const expectedKey = "CRETE-" + citizen.trackingId.replace("TRC-REQ-", "");
+
+                // If user entered the valid approval key provided by you, upgrade their status permanently on their device
+                if (keyInput && keyInput === expectedKey) {
+                    citizen.status = 'APPROVED';
+                    localStorage.setItem('trc_citizen_' + emailInput, JSON.stringify(citizen));
+                }
+
+                const isApproved = citizen.status === 'APPROVED';
                 const badgeClass = isApproved ? 'status-badge-approved' : 'status-badge-pending';
                 const statusText = isApproved ? 'APPROVED // E-CITIZEN' : 'PENDING ADMINISTRATIVE REVIEW';
+                
                 const noteText = isApproved 
-                    ? 'Official E-Citizenship credentials granted by the Presidential Office.'
-                    : 'Application logged. Pending formal review by the Federal Registry Office.';
+                    ? 'Official E-Citizenship credentials unlocked via verified Presidential Key.'
+                    : 'Application logged. Awaiting approval key from the Presidential Office.';
 
                 resultDiv.innerHTML = `
                     <div class="citizen-card">
