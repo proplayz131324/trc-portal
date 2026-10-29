@@ -336,7 +336,7 @@
             </div>
         </section>
 
-        <!-- 3. "APPLY FOR CITIZENSHIP TODAY" VIEW (YOUR CORRESPONDING CODE) -->
+        <!-- 3. "APPLY FOR CITIZENSHIP TODAY" VIEW (FIXED ARCHITECTURE) -->
         <section id="view-citizenship" class="view-section">
             <a class="back-link" onclick="switchView('view-menu')">← Back to Gateway</a>
             <header>
@@ -373,6 +373,7 @@ views.forEach(view => view.classList.remove('active'));
 const targetView = document.getElementById(viewId);
 if (targetView) {
 targetView.classList.add('active');
-window.scrollTo(0, 0); // Scroll to top smoothly on switch
+window.scrollTo(0, 0);
 }
 }
+
